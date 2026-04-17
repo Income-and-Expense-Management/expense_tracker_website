@@ -34,7 +34,7 @@ const MainLayout = () => {
 
         {/* MENU KIỀU CHO TÁC VỤ */}
         <nav className="flex-1 p-4 overflow-y-auto">
-          <Link to="/" className={getMenuClass('/')}>Tổng quan</Link>
+          <Link to="/dashboard" className={getMenuClass('/dashboard')}>Tổng quan</Link>
           <Link to="/transactions" className={getMenuClass('/transactions')}>Giao dịch</Link>
           <Link to="/wallets" className={getMenuClass('/wallets')}>Ví của tôi</Link>
           <Link to="/budgets" className={getMenuClass('/budgets')}>Ngân sách</Link>
