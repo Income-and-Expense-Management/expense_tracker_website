@@ -1,7 +1,10 @@
 import { useAuth } from "../hooks/useAuth";
+import { useWallets } from "../hooks/useWallets";
+import { Select } from "antd";
 
 const Header = () => {
   const { user } = useAuth();
+  const { wallets, selectedWalletId, setSelectedWalletId } = useWallets();
 
   return (
     <header className="h-[72px] bg-white border-b border-[#E0E4E8] flex items-center justify-between px-6 shrink-0 z-10">
@@ -20,11 +23,36 @@ const Header = () => {
           <label className="text-sm text-gray-500 font-medium">
             Ví đang chọn:
           </label>
-          <select className="bg-[#F4F6F8] border border-[#E0E4E8] text-gray-800 text-sm font-medium rounded-[12px] px-3 py-2 outline-none focus:border-green-500 hover:border-gray-300 transition-colors cursor-pointer appearance-none pr-8 relative">
-            <option value="all">Tất cả ví</option>
-            <option value="cash">Ví tiền mặt</option>
-            <option value="credit">Thẻ tín dụng</option>
-          </select>
+          <Select
+            value={selectedWalletId || undefined}
+            onChange={(value) => setSelectedWalletId(value)}
+            className="min-w-[160px]"
+            options={wallets?.map((wallet) => ({
+              value: wallet.id,
+              label: (
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 flex-shrink-0 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-[10px] font-bold ring-1 ring-green-200 overflow-hidden">
+                    {wallet.icon_id ? (
+                      <img 
+                        src={`/src/assets/icons/${wallet.icon_id}.svg`} 
+                        alt={wallet.name}
+                        className="w-3.5 h-3.5 object-contain" 
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextElementSibling.style.display = 'block';
+                        }}
+                      />
+                    ) : null}
+                    <span style={{ display: wallet.icon_id ? 'none' : 'block' }}>
+                      {wallet.name.substring(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                  <span className="font-medium text-gray-800 truncate">{wallet.name}</span>
+                </div>
+              ),
+            }))}
+            placeholder="Chọn ví"
+          />
         </div>
 
         {/* Vạch kẻ phân cách */}

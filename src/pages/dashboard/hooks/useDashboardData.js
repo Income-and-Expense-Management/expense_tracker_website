@@ -63,7 +63,8 @@ export const useDashboardData = () => {
          let dayIdx = date.getDay(); // 0 is Sunday
          if (isNaN(dayIdx)) dayIdx = 1;
 
-         if (t.type === 'income') {
+         const type = t.type || t.category?.type;
+         if (type === 'income') {
             totalIncome += amt;
             dailyDataMap[dayIdx].in += amt;
          } else {
@@ -100,6 +101,7 @@ export const useDashboardData = () => {
 
       return {
          wallets,
+         transactions,
          budgets, 
          totalIncome,
          totalExpense,
