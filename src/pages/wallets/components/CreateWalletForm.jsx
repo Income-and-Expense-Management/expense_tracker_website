@@ -4,7 +4,7 @@ import { useAppMessage } from '../../../hooks/useAppMessage';
 const ICON_LIST = [
   'ic_bills', 'ic_education', 'ic_entertainment', 'ic_food', 
   'ic_health', 'ic_other', 'ic_shopping', 'ic_transport', 
-  'ic_bonus', 'ic_gift', 'ic_investment', 'ic_other', 'ic_salary'
+  'ic_bonus', 'ic_gift', 'ic_investment', 'ic_salary'
 ];
 
 const CreateWalletForm = ({ onAddWallet, onClose }) => {
