@@ -26,6 +26,28 @@ const Register = () => {
     setSuccessMsg('');
     setFieldErrors({});
 
+    // Client-side Validation (kiểm tra input trước khi gọi backend)
+    let hasError = false;
+    const newFieldErrors = {};
+    if (!formData.full_name || formData.full_name.trim().length < 2) {
+      newFieldErrors.full_name = "Họ tên phải có ít nhất 2 ký tự.";
+      hasError = true;
+    }
+    if (!formData.email || !/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newFieldErrors.email = "Vui lòng nhập định dạng email hợp lệ.";
+      hasError = true;
+    }
+    if (!formData.password || formData.password.length < 6) {
+      newFieldErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+      hasError = true;
+    }
+
+    if (hasError) {
+      setFieldErrors(newFieldErrors);
+      setLoading(false);
+      return;
+    }
+
     try {
       // POST /auth/register
       const response = await authService.register(formData);
@@ -59,8 +81,11 @@ const Register = () => {
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Tạo mới cấu hình</h2>
+    <div className="w-full">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 tracking-wide uppercase mb-2">CREATE ACCOUNT</h2>
+        <p className="text-gray-500 font-medium">Join us today! Please enter your details.</p>
+      </div>
       
       {/* THÔNG BÁO LỖI HOẶC THÀNH CÔNG */}
       {errorMsg && (
@@ -76,16 +101,16 @@ const Register = () => {
       )}
 
       {/* KHUNG FORM INPUT */}
-      <form onSubmit={handleRegister} className="space-y-5">
+      <form onSubmit={handleRegister} className="space-y-4">
          <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Họ & tên</label>
+          <label className="block text-sm font-bold text-gray-800 mb-1.5">Full Name</label>
           <input 
             type="text" 
             name="full_name"
             value={formData.full_name}
             onChange={handleChange}
-            className={`w-full px-4 py-2.5 border ${fieldErrors.full_name ? 'border-red-500 bg-red-50' : 'border-[#E0E4E8] bg-[#F4F6F8]'} rounded-[12px] outline-none focus:border-green-500 transition-colors placeholder-gray-400`} 
-            placeholder="Ví dụ: Nguyễn Văn A" 
+            className={`w-full px-4 py-3 border ${fieldErrors.full_name ? 'border-red-500' : 'border-gray-300'} rounded-lg outline-none focus:border-green-500 transition-colors placeholder-gray-400 bg-white`} 
+            placeholder="John Doe" 
             required
             disabled={loading}
           />
@@ -93,14 +118,14 @@ const Register = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Địa chỉ Email</label>
+          <label className="block text-sm font-bold text-gray-800 mb-1.5">Email</label>
           <input 
             type="email" 
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`w-full px-4 py-2.5 border ${fieldErrors.email ? 'border-red-500 bg-red-50' : 'border-[#E0E4E8] bg-[#F4F6F8]'} rounded-[12px] outline-none focus:border-green-500 transition-colors placeholder-gray-400`} 
-            placeholder="name@example.com" 
+            className={`w-full px-4 py-3 border ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg outline-none focus:border-green-500 transition-colors placeholder-gray-400 bg-white`} 
+            placeholder="Enter your email" 
             required
             disabled={loading}
           />
@@ -108,14 +133,14 @@ const Register = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Mật khẩu</label>
+          <label className="block text-sm font-bold text-gray-800 mb-1.5">Password</label>
           <input 
             type="password" 
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className={`w-full px-4 py-2.5 border ${fieldErrors.password ? 'border-red-500 bg-red-50' : 'border-[#E0E4E8] bg-[#F4F6F8]'} rounded-[12px] outline-none focus:border-green-500 transition-colors placeholder-gray-400`} 
-            placeholder="••••••••" 
+            className={`w-full px-4 py-3 border ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg outline-none focus:border-green-500 transition-colors placeholder-gray-400 bg-white`} 
+            placeholder="********" 
             required
             minLength={6}
             disabled={loading}
@@ -123,20 +148,22 @@ const Register = () => {
           {fieldErrors.password && <p className="text-red-500 text-xs font-medium mt-1.5 ml-1">{fieldErrors.password}</p>}
         </div>
 
-        <button 
-          type="submit" 
-          disabled={loading}
-          className="w-full bg-green-500 text-white font-medium py-2.5 px-4 rounded-[12px] hover:bg-green-600 mt-2 disabled:opacity-50 transition-colors shadow-none"
-        >
-          {loading ? 'Đang xử lý...' : 'Đăng ký tài khoản'}
-        </button>
+        <div className="pt-4">
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full bg-[#4ab466] text-white font-bold py-3.5 px-4 rounded-lg hover:bg-green-600 disabled:opacity-50 transition-colors shadow-sm"
+          >
+            {loading ? 'Creating account...' : 'Sign up'}
+          </button>
+        </div>
       </form>
 
       {/* ĐIỀU HƯỚNG */}
-      <div className="mt-6 pt-5 border-t border-[#E0E4E8] text-center text-sm font-medium text-gray-600">
-        Đã là thành viên? <Link to="/login" className="text-green-600 hover:text-green-700">Đăng nhập ngay</Link>
+      <div className="mt-8 text-center text-sm font-semibold text-gray-500">
+        Already have an account? <Link to="/login" className="text-[#de6062] hover:text-red-500">Log in</Link>
       </div>
-    </>
+    </div>
   );
 };
 
