@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { useCallback } from 'react';
 
 // Cấu hình chung cho toàn bộ ứng dụng (Vị trí trên cùng, thời gian hiển thị 3 giây)
 message.config({
@@ -10,21 +11,21 @@ message.config({
 export const useAppMessage = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
-  const notifySuccess = (content) => {
+  const notifySuccess = useCallback((content) => {
     messageApi.success({ content });
-  };
+  }, [messageApi]);
 
-  const notifyError = (content) => {
+  const notifyError = useCallback((content) => {
     messageApi.error({ content });
-  };
+  }, [messageApi]);
 
-  const notifyWarning = (content) => {
+  const notifyWarning = useCallback((content) => {
     messageApi.warning({ content });
-  };
+  }, [messageApi]);
 
-  const notifyInfo = (content) => {
+  const notifyInfo = useCallback((content) => {
     messageApi.info({ content });
-  };
+  }, [messageApi]);
 
   return {
     notifySuccess,

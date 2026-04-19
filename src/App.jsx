@@ -13,6 +13,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Transactions from './pages/transactions/Transactions';
 import Categories from './pages/categories/Categories';
 import Budgets from './pages/budgets/Budgets';
+import Wallets from './pages/wallets/Wallets';
 import NotFound from './pages/not-found/NotFound';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wallets" element={<Wallets />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/budgets" element={<Budgets />} />
