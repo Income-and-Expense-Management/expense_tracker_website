@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
+import { validateRegisterForm } from '../../utils/validation';
+import { useAppMessage } from '../../hooks/useAppMessage';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { notifySuccess, notifyError, contextHolder } = useAppMessage();
 
   const [formData, setFormData] = useState({ full_name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
   const [fieldErrors, setFieldErrors] = useState({}); // Lưu trữ lỗi backend từ Zod/Validation
 
   const handleChange = (e) => {
@@ -16,34 +17,18 @@ const Register = () => {
     if (fieldErrors[e.target.name]) {
       setFieldErrors({ ...fieldErrors, [e.target.name]: '' });
     }
-    setErrorMsg('');
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMsg('');
-    setSuccessMsg('');
     setFieldErrors({});
 
     // Client-side Validation (kiểm tra input trước khi gọi backend)
-    let hasError = false;
-    const newFieldErrors = {};
-    if (!formData.full_name || formData.full_name.trim().length < 2) {
-      newFieldErrors.full_name = "Họ tên phải có ít nhất 2 ký tự.";
-      hasError = true;
-    }
-    if (!formData.email || !/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newFieldErrors.email = "Vui lòng nhập định dạng email hợp lệ.";
-      hasError = true;
-    }
-    if (!formData.password || formData.password.length < 6) {
-      newFieldErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
-      hasError = true;
-    }
+    const { isValid, errors } = validateRegisterForm(formData);
 
-    if (hasError) {
-      setFieldErrors(newFieldErrors);
+    if (!isValid) {
+      setFieldErrors(errors);
       setLoading(false);
       return;
     }
@@ -52,13 +37,9 @@ const Register = () => {
       // POST /auth/register
       const response = await authService.register(formData);
       if (response && response.success) {
-        setSuccessMsg('Tạo tài khoản thành công! Tự động chuyển hướng...');
         setFormData({ full_name: '', email: '', password: '' });
-        
-        // Delay 1.5 giây để người dùng kịp đọc tin nhắn Success sau đó về trang Login
-        setTimeout(() => {
-          navigate('/login');
-        }, 1500);
+        // Chuyển hướng ngay lập tức và truyền state message sang trang Login
+        navigate('/login', { state: { successMessage: 'Đăng kí thành công! Hãy đăng nhập.' } });
       }
     } catch (error) {
       if (error && error.errors && Array.isArray(error.errors)) {
@@ -68,12 +49,12 @@ const Register = () => {
           errorsMap[err.field] = err.message;
         });
         setFieldErrors(errorsMap);
-        setErrorMsg(error.message || 'Hồ sơ chưa hợp lệ, bạn vui lòng kiểm tra lại!');
+        notifyError(error.message || 'Hồ sơ chưa hợp lệ, bạn vui lòng kiểm tra lại!');
       } else if (error && error.message) {
         // Các HTTP Status Code khác (Ví dụ 500 Server Error)
-        setErrorMsg(error.message);
+        notifyError(error.message);
       } else {
-        setErrorMsg('Không thể tạo tài khoản lúc này, vui lòng thử lại sau.');
+        notifyError('Không thể tạo tài khoản lúc này, vui lòng thử lại sau.');
       }
     } finally {
       setLoading(false);
@@ -82,23 +63,11 @@ const Register = () => {
 
   return (
     <div className="w-full">
+      {contextHolder}
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-900 tracking-wide uppercase mb-2">CREATE ACCOUNT</h2>
         <p className="text-gray-500 font-medium">Join us today! Please enter your details.</p>
       </div>
-      
-      {/* THÔNG BÁO LỖI HOẶC THÀNH CÔNG */}
-      {errorMsg && (
-        <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm border border-red-200 rounded-[12px]">
-          {errorMsg}
-        </div>
-      )}
-
-      {successMsg && (
-        <div className="mb-4 p-3 bg-green-50 text-green-700 text-sm border border-green-200 rounded-[12px]">
-          {successMsg}
-        </div>
-      )}
 
       {/* KHUNG FORM INPUT */}
       <form onSubmit={handleRegister} className="space-y-4">

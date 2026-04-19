@@ -1,11 +1,24 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { authService } from '../../services/authService';
+import { validateLoginForm } from '../../utils/validation';
+import { useAppMessage } from '../../hooks/useAppMessage';
 
 const Login = () => {
   const { loginCtx } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { notifySuccess, notifyError, contextHolder } = useAppMessage();
+
+  // Bắt tin nhắn thành công được ném từ trang đăng ký qua navigate state
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      notifySuccess(location.state.successMessage);
+      // Thay thế location state hiện tại thành null để ko hiện lại message khi reload lại trang
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate, notifySuccess]);
 
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
@@ -28,19 +41,10 @@ const Login = () => {
     setFieldErrors({});
 
     // Client-side Validation (kiểm tra input trước khi gọi backend)
-    let hasError = false;
-    const newFieldErrors = {};
-    if (!formData.email || !/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newFieldErrors.email = "Vui lòng nhập định dạng email hợp lệ.";
-      hasError = true;
-    }
-    if (!formData.password || formData.password.length < 6) {
-      newFieldErrors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
-      hasError = true;
-    }
+    const { isValid, errors } = validateLoginForm(formData);
     
-    if (hasError) {
-      setFieldErrors(newFieldErrors);
+    if (!isValid) {
+      setFieldErrors(errors);
       setLoading(false);
       return;
     }
@@ -79,6 +83,7 @@ const Login = () => {
 
   return (
     <div className="w-full">
+      {contextHolder}
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-900 tracking-wide uppercase mb-2">WELCOME BACK</h2>
         <p className="text-gray-500 font-medium">Welcome back! Please enter your details.</p>
