@@ -25,7 +25,7 @@ const Wallets = () => {
         
         <button 
           onClick={handleOpenModal}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-5 rounded-xl shadow-sm transition-all focus:ring-4 focus:ring-green-100 flex items-center justify-center gap-2"
+          className="bg-[#008149] hover:bg-[#006f3d] text-white font-bold py-2.5 px-5 rounded-sm shadow-sm transition-all focus:ring-4 focus:ring-green-100 flex items-center justify-center gap-2"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinelinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
