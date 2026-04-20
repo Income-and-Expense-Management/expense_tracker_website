@@ -8,9 +8,10 @@ import IncomeExpenseCompareChart from './components/IncomeExpenseCompareChart';
 import BudgetProgress from './components/BudgetProgress';
 
 const Dashboard = () => {
+  const { wallets, selectedWalletId, loading: walletsLoading } = useWallets();
+
   const { 
-    loading, 
-    wallets, 
+    loading: dataLoading,
     transactions,
     budgets, 
     totalIncome,
@@ -19,9 +20,9 @@ const Dashboard = () => {
     topCategories, 
     barChartData, 
     formatMon 
-  } = useDashboardData();
+  } = useDashboardData(selectedWalletId);
 
-  const { selectedWalletId } = useWallets();
+  const loading = walletsLoading || dataLoading;
 
   if (loading) {
     return (

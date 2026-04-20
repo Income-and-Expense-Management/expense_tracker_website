@@ -8,11 +8,11 @@ export const useCategories = () => {
   const { notifySuccess, notifyError } = useAppMessage();
   const currentType = useRef('EXPENSE'); // State ẩn để nhớ type đang filter
 
-  const fetchCategories = useCallback(async (type = 'EXPENSE') => {
+  const fetchCategories = useCallback(async (type = 'EXPENSE', includeInactive = true) => {
     currentType.current = type;
     setLoading(true);
     try {
-      const response = await categoryService.getCategories(type);
+      const response = await categoryService.getCategories(type, includeInactive);
       if (response && response.success) {
         setCategories(response.data);
       }

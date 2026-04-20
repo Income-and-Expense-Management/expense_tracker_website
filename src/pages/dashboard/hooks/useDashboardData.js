@@ -1,50 +1,57 @@
 import { useState, useEffect, useMemo } from 'react';
-import { dashboardService } from '../../../services/dashboardService';
+import { transactionService } from '../../../services/transactionService';
+import { budgetService } from '../../../services/budgetService';
 import { MOCK_DASHBOARD_DATA } from './mockData';
 
-export const useDashboardData = () => {
-   const [rawItems, setRawItems] = useState({ wallets: [], transactions: [], budgets: [] });
-   const [loading, setLoading] = useState(true);
+export const useDashboardData = (selectedWalletId = null) => {
+    const [rawItems, setRawItems] = useState({ transactions: [], budgets: [] });
+    const [loading, setLoading] = useState(true);
 
-   useEffect(() => {
-     let isMounted = true;
-     const fetchData = async () => {
-        try {
-           // Promise.allSettled giúp lấy toàn bộ API song song mà không chết nếu 1 endpoint error 404
-           const [walletsRes, transRes, budgetsRes] = await Promise.allSettled([
-             dashboardService.getWallets(),
-             dashboardService.getTransactions(),
-             dashboardService.getBudgets()
-           ]);
+    useEffect(() => {
+       let isMounted = true;
+       const fetchData = async () => {
+            setLoading(true);
+            try {
+                // Lấy transaction cho ví cụ thể (nếu có) và toàn bộ budgets (sau đó filter local theo wallet)
+                const [transRes, budgetsRes] = await Promise.allSettled([
+                   transactionService.getTransactions(selectedWalletId),
+                   budgetService.getBudgets()
+                ]);
 
-           if (!isMounted) return;
+                if (!isMounted) return;
 
-           // Parse rẽ nhánh (Nếu thất bại -> fallback lấy MOCK DATA để UI có Chart Demo đẹp)
-           const wallets = walletsRes.status === 'fulfilled' && walletsRes.value?.success 
-             ? walletsRes.value.data : MOCK_DASHBOARD_DATA.wallets;
-             
-           const transactions = transRes.status === 'fulfilled' && transRes.value?.success 
-             ? transRes.value.data : MOCK_DASHBOARD_DATA.transactions;
-             
-           const budgets = budgetsRes.status === 'fulfilled' && budgetsRes.value?.success 
-             ? budgetsRes.value.data : MOCK_DASHBOARD_DATA.budgets;
+                const transactions = transRes.status === 'fulfilled' && transRes.value?.success
+                   ? transRes.value.data : MOCK_DASHBOARD_DATA.transactions;
 
-           setRawItems({ wallets, transactions, budgets });
-        } catch(e) {
-           console.error("Dashboard error", e);
-        } finally {
-           if(isMounted) setLoading(false);
-        }
-     };
-     fetchData();
-     return () => { isMounted = false; };
-   }, []);
+                const budgetsAll = budgetsRes.status === 'fulfilled' && budgetsRes.value?.success
+                   ? budgetsRes.value.data : MOCK_DASHBOARD_DATA.budgets;
+
+                const budgets = selectedWalletId
+                   ? budgetsAll.filter(b => String(b.wallet_id) === String(selectedWalletId))
+                   : budgetsAll;
+
+                setRawItems({ transactions, budgets });
+            } catch(e) {
+                console.error("Dashboard data fetch error", e);
+                if (isMounted) {
+                   setRawItems({
+                      transactions: MOCK_DASHBOARD_DATA.transactions,
+                      budgets: MOCK_DASHBOARD_DATA.budgets
+                   });
+                }
+            } finally {
+                if(isMounted) setLoading(false);
+            }
+       };
+       fetchData();
+       return () => { isMounted = false; };
+    }, [selectedWalletId]);
 
    // ==============================================
    // useMemo để tính toán số liệu (Data Aggregation) -> Chống re-render/re-calculate
    // ==============================================
    const processedData = useMemo(() => {
-      const { wallets, transactions, budgets } = rawItems;
+      const { transactions, budgets } = rawItems;
       
       let totalIncome = 0;
       let totalExpense = 0;
@@ -100,7 +107,6 @@ export const useDashboardData = () => {
       const formatMon = (num) => new Intl.NumberFormat('vi-VN').format(num || 0);
 
       return {
-         wallets,
          transactions,
          budgets, 
          totalIncome,
