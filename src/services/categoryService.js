@@ -4,8 +4,8 @@ const API_PATH = '/categories';
 
 export const categoryService = {
   // Lấy danh sách danh mục (hỗ trợ filter theo type)
-  getCategories: async (type = '') => {
-    const params = type ? { type, include_inactive: true } : { include_inactive: true };
+  getCategories: async (type = '', include_inactive = true) => {
+    const params = type ? { type, include_inactive: include_inactive } : { include_inactive: include_inactive };
     return await apiClient.get(API_PATH, { params });
   },
 

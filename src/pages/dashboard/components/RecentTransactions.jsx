@@ -21,16 +21,24 @@ const RecentTransactions = memo(({ transactions, formatMon }) => {
           recentTransactions.map((t) => (
             <div key={t.id} className="flex justify-between items-center border-b border-[#E0E4E8] pb-3 last:border-0 last:pb-0">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${(t.type || t.category?.type) === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                  {t.category?.icon_name || ((t.type || t.category?.type) === 'income' ? '+' : '-')}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${(t.type || t.category?.type) === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                  <img 
+                    src={`/src/assets/icons/${t.category?.icon_name || 'other'}.svg`} 
+                    alt={t.category?.name || 'Danh mục'}
+                    className="w-6 h-6 object-contain"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.textContent = (t.category?.name || 'Khác').charAt(0).toUpperCase();
+                    }}
+                  />
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-800 text-sm">{t.note || t.category?.name || 'Chưa phân loại'}</h4>
                   <p className="text-xs text-gray-500">{dayjs(t.transaction_date).format('DD/MM/YYYY')}</p>
                 </div>
               </div>
-              <div className={`font-bold ${(t.type || t.category?.type) === 'income' ? 'text-green-600' : 'text-gray-800'}`}>
-                {(t.type || t.category?.type) === 'income' ? '+' : '-'}{formatMon(t.amount)} ₫
+              <div className={`font-bold ${(t.type || t.category?.type) === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
+                {(t.type || t.category?.type) === 'INCOME' ? '+' : '-'}{formatMon(t.amount)} ₫
               </div>
             </div>
           ))

@@ -173,7 +173,7 @@ const Transactions = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-         const res = await categoryService.getCategories(null);
+         const res = await categoryService.getCategories(null, false);
          if(res.success) setCategories(res.data);
       } catch(e) {
       }
