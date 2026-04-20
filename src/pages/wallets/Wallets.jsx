@@ -6,7 +6,7 @@ import CreateWalletForm from './components/CreateWalletForm';
 import { useAppMessage } from '../../hooks/useAppMessage';
 
 const Wallets = () => {
-  const { wallets, loading, addWallet, updateWallet, setSelectedWalletId } = useWallets();
+  const { wallets, loading, addWallet, updateWallet, setSelectedWalletId, deleteWallet } = useWallets();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingWallet, setEditingWallet] = useState(null);
   const { contextHolder } = useAppMessage();
@@ -62,6 +62,14 @@ const Wallets = () => {
               wallet={wallet} 
               onEdit={handleOpenModal} 
               onClick={() => handleWalletClick(wallet)} 
+              onDelete={async (id) => {
+                // call context deleteWallet and handle result
+                const res = await deleteWallet(id);
+                if (!res || !res.success) {
+                  // deleteWallet already notifies on error
+                  return;
+                }
+              }}
             />
           ))}
         </div>
