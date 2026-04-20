@@ -1,6 +1,10 @@
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 export const AUTH_TOKEN_KEY = 'app_auth_token';
 
+// Google Identity Services (Web Client ID)
+// Set in Vite env as: VITE_GOOGLE_CLIENT_ID=
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
 export const TRANSACTION_TYPES = {
   INCOME: 'INCOME',
   EXPENSE: 'EXPENSE',
