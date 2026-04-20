@@ -77,6 +77,22 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
+  const deleteWallet = async (id) => {
+    try {
+      const response = await walletService.deleteWallet(id);
+      if (response && response.success) {
+        notifySuccess('Xoá ví thành công!');
+        // reload wallets and let fetchWallets manage selectedWalletId
+        await fetchWallets();
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      notifyError(error?.message || 'Có lỗi xảy ra khi xóa ví, vui lòng thử lại!');
+      return { success: false };
+    }
+  };
+
   return (
     <WalletContext.Provider
       value={{
@@ -86,7 +102,8 @@ export const WalletProvider = ({ children }) => {
         setSelectedWalletId,
         fetchWallets,
         addWallet,
-        updateWallet
+        updateWallet,
+        deleteWallet
       }}
     >
       {contextHolder}

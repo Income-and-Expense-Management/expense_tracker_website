@@ -1,7 +1,8 @@
 import { memo } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
+import { Modal } from 'antd';
 
-const WalletCard = ({ wallet, onEdit, onClick }) => {
+const WalletCard = ({ wallet, onEdit, onClick, onDelete }) => {
   const balance = Number(wallet.current_balance || wallet.initial_balance || 0);
   console.log('Rendering WalletCard:', wallet.name, 'Balance:', wallet.current_balance, 'Initial:', wallet.initial_balance);
   // Định dạng lại chuỗi giá trị số thành dạng tiền tệ VND
@@ -37,16 +38,38 @@ const WalletCard = ({ wallet, onEdit, onClick }) => {
           </div>
         </div>
 
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onEdit(wallet);
-          }}
-          className="relative z-20 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-green-100 hover:text-green-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-          title="Chỉnh sửa ví"
-        >
-          <Pencil size={15} />
-        </button>
+        <div className="relative z-20 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(wallet);
+            }}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-green-100 hover:text-green-600 transition-all"
+            title="Chỉnh sửa ví"
+          >
+            <Pencil size={15} />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              Modal.confirm({
+                title: 'Xác nhận xóa ví',
+                content: 'Xóa ví sẽ ẩn ví này và có thể ảnh hưởng tới báo cáo. Bạn có chắc muốn xóa?',
+                okText: 'Xóa',
+                okType: 'danger',
+                cancelText: 'Hủy',
+                onOk: async () => {
+                  if (onDelete) await onDelete(wallet.id);
+                }
+              });
+            }}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-red-100 hover:text-red-600 transition-all"
+            title="Xóa ví"
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-50 flex justify-between items-end relative z-10 transition-transform group-hover:-translate-x-1">

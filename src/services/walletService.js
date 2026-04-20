@@ -10,4 +10,8 @@ export const walletService = {
   updateWallet: async (id, data) => {
     return await apiClient.patch(`/wallets/${id}`, data);
   }
+  ,
+  deleteWallet: async (id) => {
+    return await apiClient.delete(`/wallets/${id}`);
+  }
 };
