@@ -12,7 +12,7 @@ dayjs.locale('vi');
 // Component for creating/updating a transaction
 const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletId, editData }) => {
   const [loading, setLoading] = useState(false);
-  const [type, setType] = useState('expense');
+  const [type, setType] = useState('EXPENSE');
   const [formData, setFormData] = useState({
     wallet_id: initialWalletId,
     category_id: null,
@@ -24,7 +24,7 @@ const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletI
   useEffect(() => {
     if (visible) {
       if (editData) {
-        const catType = editData.type || editData.category?.type || 'expense';
+        const catType = editData.type || editData.category?.type || 'EXPENSE';
         setType(catType);
         setFormData({
           wallet_id: editData.wallet_id,
@@ -34,7 +34,7 @@ const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletI
           transaction_date: dayjs(editData.transaction_date)
         });
       } else {
-        setType('expense');
+        setType('EXPENSE');
         setFormData({
           wallet_id: initialWalletId,
           category_id: null,
@@ -77,8 +77,8 @@ const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletI
         <Segmented
           block
           options={[
-            { label: 'Khoản chi', value: 'expense' },
-            { label: 'Khoản thu', value: 'income' }
+            { label: 'Khoản chi', value: 'EXPENSE' },
+            { label: 'Khoản thu', value: 'INCOME' }
           ]}
           value={type}
           onChange={(val) => {
@@ -89,7 +89,7 @@ const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletI
         />
 
         <div>
-          <label className={`text-xs font-bold uppercase mb-1 block ${type === 'expense' ? 'text-red-500' : 'text-green-600'}`}>
+          <label className={`text-xs font-bold uppercase mb-1 block ${type === 'EXPENSE' ? 'text-red-500' : 'text-green-600'}`}>
             Số tiền (VND)
           </label>
           <InputNumber
@@ -114,7 +114,7 @@ const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletI
             options={filteredCategories.map(c => ({
               label: (
                 <div className="flex items-center gap-2">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${type === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                     {c.icon_name || c.name.substring(0, 2).toUpperCase()}
                   </div>
                   <span>{c.name}</span>
@@ -166,7 +166,7 @@ const Transactions = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-         const res = await categoryService.getCategories();
+         const res = await categoryService.getCategories(null);
          console.log('Categories loaded:', res);
          if(res.success) setCategories(res.data);
       } catch(e) {
@@ -193,7 +193,7 @@ const Transactions = () => {
        groups[dateStr].push(t);
 
        const type = t.type || t.category?.type;
-       if (type === 'income') totalIn += Number(t.amount);
+       if (type === 'INCOME') totalIn += Number(t.amount);
        else totalOut += Number(t.amount);
     });
 
@@ -300,7 +300,7 @@ const Transactions = () => {
              const dayTxs = groupedData.groups[dateStr];
              const dayTotal = dayTxs.reduce((sum, t) => {
                 const type = t.type || t.category?.type;
-                return type === 'income' ? sum + Number(t.amount) : sum - Number(t.amount);
+                return type === 'INCOME' ? sum + Number(t.amount) : sum - Number(t.amount);
              }, 0);
              
              return (
@@ -324,8 +324,8 @@ const Transactions = () => {
                           setModalVisible(true);
                         }}>
                            <div className="flex items-center gap-4">
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500'}`}>
-                                 {t.category?.icon_name || (type === 'income' ? '+' : '-')}
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${type === 'INCOME' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500'}`}>
+                                 {t.category?.icon_name || (type === 'INCOME' ? '+' : '-')}
                               </div>
                               <div>
                                 <h5 className="text-gray-800 font-bold">{t.category?.name || 'Không có danh mục'}</h5>
@@ -333,8 +333,8 @@ const Transactions = () => {
                               </div>
                            </div>
                            <div className="text-right">
-                              <p className={`font-bold ${type === 'income' ? 'text-green-600' : 'text-gray-800'}`}>
-                                {type === 'income' ? '+' : '-'}{formatMon(t.amount)}
+                              <p className={`font-bold ${type === 'INCOME' ? 'text-green-600' : 'text-gray-800'}`}>
+                                {type === 'INCOME' ? '+' : '-'}{formatMon(t.amount)}
                               </p>
                               
                               <div className="hidden group-hover:flex justify-end gap-2 mt-1">

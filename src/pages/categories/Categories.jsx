@@ -6,7 +6,7 @@ import { useAppMessage } from '../../hooks/useAppMessage';
 
 const Categories = () => {
   const { categories, loading, fetchCategories, addCategory, editCategory, removeCategory } = useCategories();
-  const [filterType, setFilterType] = useState('expense'); //  'income' | 'expense'
+  const [filterType, setFilterType] = useState('EXPENSE'); //  'INCOME' | 'EXPENSE'
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   
@@ -51,14 +51,14 @@ const Categories = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          {/* Bộ lọc đã loại bỏ nút Tất cả, Mặc định là expense  */}
+          {/* Bộ lọc đã loại bỏ nút Tất cả, Mặc định là EXPENSE  */}
           <select 
             value={filterType} 
             onChange={(e) => setFilterType(e.target.value)}
             className="border border-gray-200 p-2.5 rounded-sm focus:outline-none focus:border-green-500 text-sm font-bold text-gray-700 bg-white"
           >
-            <option value="expense">Chi tiêu</option>
-            <option value="income">Thu nhập</option>
+            <option value="EXPENSE">Chi tiêu</option>
+            <option value="INCOME">Thu nhập</option>
           </select>
 
           <button 

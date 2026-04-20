@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
+import {ICON_LIST} from '../../constants/constants';
 
-const ICON_LIST = [
-  'ic_bills', 'ic_education', 'ic_entertainment', 'ic_food', 
-  'ic_health', 'ic_other', 'ic_shopping', 'ic_transport', 
-  'ic_bonus', 'ic_gift', 'ic_investment', 'ic_salary'
-];
 
 const CategoryModal = ({ category, onSubmitData, onClose }) => {
     const isEdit = !!category;
     const [formData, setFormData] = useState({
         name: '',
-        type: 'expense',
+        type: 'EXPENSE',
         icon_name: 'ic_other'
     });
     const [loading, setLoading] = useState(false);
@@ -19,7 +15,7 @@ const CategoryModal = ({ category, onSubmitData, onClose }) => {
         if (isEdit) {
             setFormData({
                 name: category.name || '',
-                type: category.type || 'expense',
+                type: category.type || 'EXPENSE',
                 icon_name: category.icon_name || 'ic_other'
             });
         }
@@ -88,8 +84,8 @@ const CategoryModal = ({ category, onSubmitData, onClose }) => {
                                 onChange={handleChange} 
                                 className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all font-medium appearance-none"
                             >
-                                <option value="expense">Chi tiêu</option>
-                                <option value="income">Thu nhập</option>
+                                <option value="EXPENSE">Chi tiêu</option>
+                                <option value="INCOME">Thu nhập</option>
                             </select>
                         </div>
 
@@ -98,7 +94,7 @@ const CategoryModal = ({ category, onSubmitData, onClose }) => {
                                 Chọn biểu tượng (Icon)
                             </label>
                             <div className="grid grid-cols-5 sm:grid-cols-7 gap-3">
-                                {ICON_LIST.map(iconId => (
+                                {ICON_LIST[formData.type]?.map(iconId => (
                                     <button
                                         key={iconId}
                                         type="button"

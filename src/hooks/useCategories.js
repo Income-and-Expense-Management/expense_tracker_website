@@ -6,9 +6,9 @@ export const useCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError } = useAppMessage();
-  const currentType = useRef('expense'); // State ẩn để nhớ type đang filter
+  const currentType = useRef('EXPENSE'); // State ẩn để nhớ type đang filter
 
-  const fetchCategories = useCallback(async (type = 'expense') => {
+  const fetchCategories = useCallback(async (type = 'EXPENSE') => {
     currentType.current = type;
     setLoading(true);
     try {
