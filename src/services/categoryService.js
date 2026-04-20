@@ -1,11 +1,13 @@
-import apiClient from './apiClient';
+﻿import apiClient from './apiClient';
 
 const API_PATH = '/categories';
 
 export const categoryService = {
-  // Lấy danh sách danh mục (hỗ trợ filter theo type)
-  getCategories: async (type = '') => {
-    const params = type ? { type, include_inactive: true } : { include_inactive: true };
+  // Lấy danh sách danh mục (hỗ trợ filter theo type và includeInactive)
+  getCategories: async (type = '', includeInactive = false) => {
+    const params = {};
+    if (type) params.type = type;
+    if (includeInactive) params.include_inactive = 'true';
     return await apiClient.get(API_PATH, { params });
   },
 
