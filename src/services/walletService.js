@@ -6,5 +6,8 @@ export const walletService = {
   },
   createWallet: async (data) => {
     return await apiClient.post('/wallets', data);
+  },
+  updateWallet: async (id, data) => {
+    return await apiClient.patch(`/wallets/${id}`, data);
   }
 };

@@ -1,16 +1,30 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWallets } from '../../hooks/useWallets';
 import WalletCard from './components/WalletCard';
 import CreateWalletForm from './components/CreateWalletForm';
 import { useAppMessage } from '../../hooks/useAppMessage';
 
 const Wallets = () => {
-  const { wallets, loading, addWallet } = useWallets();
+  const { wallets, loading, addWallet, updateWallet, setSelectedWalletId } = useWallets();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingWallet, setEditingWallet] = useState(null);
   const { contextHolder } = useAppMessage();
+  const navigate = useNavigate();
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleOpenModal = (wallet = null) => {
+    setEditingWallet(wallet);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setEditingWallet(null);
+    setIsModalOpen(false);
+  };
+
+  const handleWalletClick = (wallet) => {
+    setSelectedWalletId(wallet.id);
+    navigate('/transactions');
+  };
 
   return (
     <div className="max-w-6xl mx-auto pb-10">
@@ -24,7 +38,7 @@ const Wallets = () => {
         </div>
         
         <button 
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal()}
           className="bg-[#008149] hover:bg-[#006f3d] text-white font-bold py-2.5 px-5 rounded-sm shadow-sm transition-all focus:ring-4 focus:ring-green-100 flex items-center justify-center gap-2"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinelinejoin="round">
@@ -43,7 +57,12 @@ const Wallets = () => {
       ) : wallets.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {wallets.map((wallet) => (
-            <WalletCard key={wallet.id} wallet={wallet} />
+            <WalletCard 
+              key={wallet.id} 
+              wallet={wallet} 
+              onEdit={handleOpenModal} 
+              onClick={() => handleWalletClick(wallet)} 
+            />
           ))}
         </div>
       ) : (
@@ -58,7 +77,7 @@ const Wallets = () => {
           <h3 className="text-lg font-bold text-gray-800 mb-1">Chưa có ví nào</h3>
           <p className="text-gray-500 font-medium mb-6">Bạn chưa có ví nào trong tài khoản. Hãy tạo một ví mới để bắt đầu quản lý chi tiêu.</p>
           <button 
-            onClick={handleOpenModal}
+            onClick={() => handleOpenModal()}
             className="text-green-600 hover:text-green-700 font-bold hover:underline"
           >
             Tạo ví đầu tiên
@@ -70,6 +89,8 @@ const Wallets = () => {
       {isModalOpen && (
         <CreateWalletForm 
           onAddWallet={addWallet} 
+          onUpdateWallet={updateWallet}
+          editData={editingWallet}
           onClose={handleCloseModal} 
         />
       )}

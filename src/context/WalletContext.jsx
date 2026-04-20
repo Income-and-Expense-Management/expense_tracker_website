@@ -59,6 +59,24 @@ export const WalletProvider = ({ children }) => {
     }
   };
 
+  const updateWallet = async (id, walletData) => {
+    try {
+      const response = await walletService.updateWallet(id, walletData);
+      if (response && response.success) {
+        notifySuccess('Cập nhật ví thành công!');
+        fetchWallets();
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      if (error?.errors && Array.isArray(error.errors)) {
+        return { success: false, errors: error.errors };
+      }
+      notifyError(error?.message || 'Có lỗi xảy ra khi cập nhật ví, vui lòng thử lại!');
+      return { success: false };
+    }
+  };
+
   return (
     <WalletContext.Provider
       value={{
@@ -67,7 +85,8 @@ export const WalletProvider = ({ children }) => {
         selectedWalletId,
         setSelectedWalletId,
         fetchWallets,
-        addWallet
+        addWallet,
+        updateWallet
       }}
     >
       {contextHolder}

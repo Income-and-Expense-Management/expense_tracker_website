@@ -7,12 +7,12 @@ const ICON_LIST = [
   'ic_bonus', 'ic_gift', 'ic_investment', 'ic_salary'
 ];
 
-const CreateWalletForm = ({ onAddWallet, onClose }) => {
+const CreateWalletForm = ({ onAddWallet, onUpdateWallet, editData, onClose }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    initial_balance: '',
+    name: editData ? editData.name : '',
+    initial_balance: editData ? editData.initial_balance : '',
     currency: 'VND', // Cố định payload
-    icon_id: 'ic_other' // Mặc định
+    icon_id: editData && editData.icon_id ? editData.icon_id : 'ic_other' // Mặc định
   });
   
   const [loading, setLoading] = useState(false);
@@ -54,7 +54,9 @@ const CreateWalletForm = ({ onAddWallet, onClose }) => {
       initial_balance: Number(formData.initial_balance) // Ép kiểu số nguyên theo tài liệu FRONTEND-INTEGRATION-GUIDE
     };
 
-    const response = await onAddWallet(payload);
+    const response = editData 
+      ? await onUpdateWallet(editData.id, payload)
+      : await onAddWallet(payload);
     
     if (response.success) {
       onClose(); // Thành công thì đóng form
@@ -66,7 +68,7 @@ const CreateWalletForm = ({ onAddWallet, onClose }) => {
         });
         setFieldErrors(errorsMap);
       } else {
-         notifyError('Tao ví thất bại');
+         notifyError(editData ? 'Cập nhật ví thất bại' : 'Tao ví thất bại');
       }
     }
     setLoading(false);
@@ -76,7 +78,7 @@ const CreateWalletForm = ({ onAddWallet, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h2 className="text-xl font-bold text-gray-800">Thêm ví mới</h2>
+          <h2 className="text-xl font-bold text-gray-800">{editData ? 'Sửa ví' : 'Thêm ví mới'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-lg hover:bg-gray-100">
             ✕
           </button>
@@ -170,7 +172,7 @@ const CreateWalletForm = ({ onAddWallet, onClose }) => {
             disabled={loading}
             className="px-5 py-2.5 rounded-xl font-bold text-white bg-green-500 hover:bg-green-600 transition-colors shadow-sm disabled:opacity-50"
           >
-            {loading ? 'Đang tạo...' : 'Tạo ví mới'}
+            {loading ? 'Đang lưu...' : (editData ? 'Lưu thay đổi' : 'Tạo ví mới')}
           </button>
         </div>
       </div>
