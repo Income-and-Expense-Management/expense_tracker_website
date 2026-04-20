@@ -39,6 +39,10 @@ const Categories = () => {
     }
   };
 
+  const handleToggleActive = async (id, currentActiveState) => {
+    await editCategory(id, { is_active: !currentActiveState });
+  };
+
   return (
     <div className="max-w-6xl mx-auto pb-10">
       {contextHolder}
@@ -87,6 +91,7 @@ const Categories = () => {
               category={category} 
               onEdit={handleOpenModal}
               onDelete={removeCategory}
+              onToggleActive={handleToggleActive}
             />
           ))}
         </div>
