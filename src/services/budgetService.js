@@ -8,21 +8,21 @@ export const budgetService = {
   
   getBudgetById: async (id) => {
     const response = await apiClient.get(`/budgets/${id}`);
-    return response.data;
+    return response;
   },
   
   createBudget: async (data) => {
     const response = await apiClient.post('/budgets/', data);
-    return response.data;
+    return response;
   },
   
   updateBudget: async (id, data) => {
     const response = await apiClient.patch(`/budgets/${id}`, data);
-    return response.data;
+    return response;
   },
   
   deleteBudget: async (id) => {
     const response = await apiClient.delete(`/budgets/${id}`);
-    return response.data;
+    return response;
   }
 };

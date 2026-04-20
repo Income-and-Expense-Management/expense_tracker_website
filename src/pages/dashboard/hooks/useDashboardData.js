@@ -71,7 +71,7 @@ export const useDashboardData = (selectedWalletId = null) => {
          if (isNaN(dayIdx)) dayIdx = 1;
 
          const type = t.type || t.category?.type;
-         if (type === 'income') {
+         if (type === 'INCOME') {
             totalIncome += amt;
             dailyDataMap[dayIdx].in += amt;
          } else {

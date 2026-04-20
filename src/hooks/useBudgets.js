@@ -5,7 +5,7 @@ import { useAppMessage } from './useAppMessage';
 export const useBudgets = () => {
   const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { showMessage } = useAppMessage();
+  const { notifySuccess, notifyError } = useAppMessage();
 
   const fetchBudgets = useCallback(async () => {
     setLoading(true);
@@ -13,26 +13,33 @@ export const useBudgets = () => {
       const res = await budgetService.getBudgets();
       if (res?.success) {
         setBudgets(res.data || []);
+      } else {
+        notifyError(res?.message || 'Lỗi khi tải danh sách ngân sách');
       }
     } catch (error) {
-      showMessage('error', 'Lỗi khi tải danh sách ngân sách');
+      notifyError('Lỗi khi tải danh sách ngân sách');
       console.error(error);
     } finally {
       setLoading(false);
     }
-  }, [showMessage]);
+  }, [notifyError]);
 
   const addBudget = async (data) => {
     try {
       setLoading(true);
       const res = await budgetService.createBudget(data);
       if (res?.success) {
-        showMessage('success', 'Thêm ngân sách thành công');
+        notifySuccess(res.message || 'Thêm ngân sách thành công');
         await fetchBudgets();
         return true;
       }
+
+      // Show server-provided message when available
+      notifyError(res?.message || 'Thêm thất bại');
+      return false;
     } catch (error) {
-      showMessage('error', 'Thêm thất bại');
+      notifyError(error?.message || 'Thêm thất bại');
+      console.error(error);
       return false;
     } finally {
       setLoading(false);
@@ -44,12 +51,14 @@ export const useBudgets = () => {
       setLoading(true);
       const res = await budgetService.updateBudget(id, data);
       if (res?.success) {
-        showMessage('success', 'Cập nhật ngân sách thành công');
+        notifySuccess(res.message || 'Cập nhật ngân sách thành công');
         await fetchBudgets();
         return true;
       }
+      notifyError(res?.message || 'Cập nhật thất bại');
+      return false;
     } catch (error) {
-      showMessage('error', 'Cập nhật thất bại');
+      notifyError(error?.message || 'Cập nhật thất bại');
       console.error(error);
       return false;
     } finally {
@@ -62,12 +71,14 @@ export const useBudgets = () => {
       setLoading(true);
       const res = await budgetService.deleteBudget(id);
       if (res?.success) {
-        showMessage('success', 'Xoá ngân sách thành công');
+        notifySuccess(res.message || 'Xoá ngân sách thành công');
         await fetchBudgets();
         return true;
       }
+      notifyError(res?.message || 'Xoá thất bại');
+      return false;
     } catch (error) {
-      showMessage('error', 'Xoá thất bại');
+      notifyError(error?.message || 'Xoá thất bại');
       console.error(error);
       return false;
     } finally {

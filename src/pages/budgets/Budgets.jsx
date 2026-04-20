@@ -81,7 +81,9 @@ const Budgets = () => {
 
   // Lọc theo ví đang chọn (nếu có)
   const activeWalletId = selectedWalletId || null;
-  const filteredBudgets = activeWalletId ? budgets.filter(b => b.wallet_id === activeWalletId) : budgets;
+  const filteredBudgets = activeWalletId
+    ? budgets.filter(b => String(b.wallet_id) === String(activeWalletId))
+    : budgets;
 
   // Tính tổng (dựa trên filteredBudgets)
   const totalTarget = filteredBudgets.reduce((acc, curr) => acc + Number(curr.target_amount || 0), 0);
