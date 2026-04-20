@@ -19,11 +19,11 @@ export const WalletProvider = ({ children }) => {
       const response = await walletService.getWallets();
       if (response && response.success) {
         setWallets(response.data);
-        if (response.data.length > 0 && !selectedWalletId) {
-          setSelectedWalletId(response.data[0].id);
-        } else if (response.data.length === 0) {
-          setSelectedWalletId(null);
-        }
+        setSelectedWalletId(prev => {
+          if (response.data.length === 0) return null;
+          if (!prev) return response.data[0].id;
+          return prev;
+        });
       }
     } catch (error) {
       if (error && error.message) {
@@ -34,9 +34,10 @@ export const WalletProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated, selectedWalletId, notifyError]);
+  }, [isAuthenticated, notifyError]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchWallets();
   }, [fetchWallets]);
 

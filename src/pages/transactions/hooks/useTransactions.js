@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 export const useTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { notifySuccess, notifyError } = useAppMessage();
+  const { notifySuccess, notifyError, contextHolder } = useAppMessage();
 
   const fetchTransactions = useCallback(async (walletId = null, month = dayjs()) => {
     if (!walletId) {
@@ -78,6 +78,7 @@ export const useTransactions = () => {
     fetchTransactions,
     addTransaction,
     editTransaction,
-    removeTransaction
+    removeTransaction,
+    msgContextHolder: contextHolder
   };
 };

@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 const WalletCard = ({ wallet }) => {
   const balance = Number(wallet.current_balance || wallet.initial_balance || 0);
-
+  console.log('Rendering WalletCard:', wallet.name, 'Balance:', wallet.current_balance, 'Initial:', wallet.initial_balance);
   // Định dạng lại chuỗi giá trị số thành dạng tiền tệ VND
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('vi-VN', {

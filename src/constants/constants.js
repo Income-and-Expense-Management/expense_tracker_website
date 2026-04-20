@@ -10,7 +10,7 @@ export const CURRENCY_DEFAULT = 'VND';
 
 export const ICON_LIST = {
   [TRANSACTION_TYPES.INCOME]: [
-    'ic_salary', 'ic_investment', 'ic_bonus', 'ic_gift', 'ic_other'
+    'ic_salary', 'ic_investment', 'ic_bonus', 'ic_gift', 'ic_others'
   ],
   [TRANSACTION_TYPES.EXPENSE]: [
     'ic_bills', 'ic_education', 'ic_food', 'ic_health', 'ic_transport', 'ic_shopping', 'ic_entertainment', 'ic_other'
