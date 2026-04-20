@@ -15,8 +15,8 @@ export const authService = {
   login: (data) => apiClient.post('/auth/login', data),
 
   /**
-   * Đăng nhập qua Google (xử lý token từ firebase/google client)
-   * @param {Object} data - { idToken }
+    * Đăng nhập qua Google (Google Identity Services)
+    * @param {Object} data - { id_token, email, full_name? }
    */
   loginGoogle: (data) => apiClient.post('/auth/google', data),
 

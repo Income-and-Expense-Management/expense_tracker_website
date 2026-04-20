@@ -114,7 +114,7 @@ AI tham chiếu vào sitemap này để trỏ URI fetching cho dự án Frontend
 
 | Context Area | Endpoints Cấu Hình Frontend Cần Viết | Payload Yêu cầu Chính (Body/Params) |
 |---|---|---|
-| **Auth** | `POST /auth/register`<br>`POST /auth/login`<br>`POST /auth/google`<br>`GET /auth/profile` *(Bearer)* <br>`PATCH /auth/profile`<br>`PATCH /auth/change-password`<br>`POST /auth/logout` | Đăng ký: `{email, password, full_name}` <br>Đăng nhập: `{email, password}`<br>Google: `{idToken}` |
+| **Auth** | `POST /auth/register`<br>`POST /auth/login`<br>`POST /auth/google`<br>`GET /auth/profile` *(Bearer)* <br>`PATCH /auth/profile`<br>`PATCH /auth/change-password`<br>`POST /auth/logout` | Đăng ký: `{email, password, full_name}` <br>Đăng nhập: `{email, password}`<br>Google: `{id_token, email, full_name?}` |
 | **Wallets** | `GET /wallets`<br>`GET /wallets/:walletId`<br>`POST /wallets`<br>`PATCH /wallets/:walletId`<br>`DELETE /wallets/:walletId` *(204 HTTP)* | POST: `{name, initial_balance, currency, icon_id}`<br>PATCH: Cập nhật properties được chọn |
 | **Transactions<br>(Chung - User wide)** | `GET /transactions`<br>`POST /transactions`<br>`GET /transactions/:id`<br>`PATCH /transactions/:id`<br>`DELETE /transactions/:id` *(204 HTTP)* | POST: Bắt buộc đính kèm `{wallet_id}` trong payload.<br>`{amount, type, transaction_date, note, category_id?, icon_id?}` |
 | **Transactions<br>(Theo Wallet)** | `GET /wallets/:walletId/transactions`<br>`POST /wallets/:walletId/transactions`<br>`GET /wallets/:walletId/transactions/statistics` | POST: Không cần `wallet_id` (lấy từ params).<br>`{amount, type, transaction_date, note}` |
