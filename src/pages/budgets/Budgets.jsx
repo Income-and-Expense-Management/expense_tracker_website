@@ -201,10 +201,10 @@ const Budgets = () => {
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center p-2 border border-gray-100 flex-shrink-0">
                        <img 
-                          src={`/src/assets/icons/${category?.icon_name || 'other'}.svg`} 
+                          src={`/src/assets/icons/${category?.icon_name || 'ic_other'}.svg`} 
                           alt={category?.name || 'Ngân sách'} 
                           className="w-full h-full object-contain"
-                          onError={(e) => { e.target.style.display = 'none'; }}
+                          onError={(e) => { e.target.src = '/src/assets/icons/ic_other.svg'; }}
                        />
                     </div>
                     <div>

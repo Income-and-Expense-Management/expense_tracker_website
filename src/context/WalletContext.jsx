@@ -1,16 +1,27 @@
-import { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import { walletService } from '../services/walletService';
 import { useAppMessage } from '../hooks/useAppMessage';
 import { useAuth } from '../hooks/useAuth';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const WalletContext = createContext(undefined);
 
 export const WalletProvider = ({ children }) => {
   const [wallets, setWallets] = useState([]);
-  const [selectedWalletId, setSelectedWalletId] = useState(null);
+  const [selectedWalletId, setSelectedWalletId] = useState(() => {
+    return localStorage.getItem('selected_wallet_id') || null;
+  });
   const [loading, setLoading] = useState(false);
   const { notifySuccess, notifyError, contextHolder } = useAppMessage();
   const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (selectedWalletId) {
+      localStorage.setItem('selected_wallet_id', selectedWalletId);
+    } else {
+      localStorage.removeItem('selected_wallet_id');
+    }
+  }, [selectedWalletId]);
 
   const fetchWallets = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -21,8 +32,9 @@ export const WalletProvider = ({ children }) => {
         setWallets(response.data);
         setSelectedWalletId(prev => {
           if (response.data.length === 0) return null;
-          if (!prev) return response.data[0].id;
-          return prev;
+          const exists = response.data.some(w => String(w.id) === String(prev));
+          if (exists) return prev;
+          return response.data[0].id;
         });
       }
     } catch (error) {

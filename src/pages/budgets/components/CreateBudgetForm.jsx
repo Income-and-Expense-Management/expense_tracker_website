@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Modal, Form, InputNumber, Select, DatePicker } from 'antd';
 import { useWallets } from '../../../hooks/useWallets';
 import { useCategories } from '../../../hooks/useCategories';
@@ -94,7 +94,12 @@ const CreateBudgetForm = ({ visible, onClose, onSubmit, loading, editData = null
               value: cat.id,
               label: (
                 <div className="flex items-center gap-2">
-                  <img src={`/src/assets/icons/${cat.icon_name}.svg`} alt={cat.name} className="w-5 h-5" onError={(e) => { e.target.style.display = 'none'; }} />
+                  <img 
+                    src={`/src/assets/icons/${cat.icon_name || 'ic_other'}.svg`} 
+                    alt={cat.name} 
+                    className="w-5 h-5" 
+                    onError={(e) => { e.target.src = '/src/assets/icons/ic_other.svg'; }} 
+                  />
                   <span>{cat.name}</span>
                 </div>
               )

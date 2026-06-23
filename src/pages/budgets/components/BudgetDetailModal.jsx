@@ -9,7 +9,6 @@ const BudgetDetailModal = ({ visible, onClose, budget, category, wallet, onEdit,
   const target = Number(budget.target_amount || 0);
   const remaining = target - spent;
   const progress = target ? Math.min(100, Math.round((spent / target) * 100)) : 0;
-  const daysLeft = Math.max(0, dayjs(budget.end_date).startOf('day').diff(dayjs().startOf('day'), 'day'));
 
   const formatCurrency = (amount) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
 
@@ -32,7 +31,12 @@ const BudgetDetailModal = ({ visible, onClose, budget, category, wallet, onEdit,
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-100">
-            <img src={`/src/assets/icons/${category?.icon_name || 'other'}.svg`} alt={category?.name || 'Danh mục'} className="w-8 h-8" onError={(e)=> e.target.style.display='none'} />
+            <img 
+              src={`/src/assets/icons/${category?.icon_name || 'ic_other'}.svg`} 
+              alt={category?.name || 'Danh mục'} 
+              className="w-8 h-8" 
+              onError={(e) => { e.target.src = '/src/assets/icons/ic_other.svg'; }} 
+            />
           </div>
           <div>
             <p className="font-bold text-gray-800">{category?.name || 'Ngân sách'}</p>
