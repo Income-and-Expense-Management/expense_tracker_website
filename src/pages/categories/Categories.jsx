@@ -5,9 +5,11 @@ import CategoryModal from './CategoryModal';
 import { useAppMessage } from '../../hooks/useAppMessage';
 import { Modal } from 'antd';
 import { transactionService } from '../../services/transactionService';
+import { useWallets } from '../../hooks/useWallets';
 
 const Categories = () => {
   const { categories, loading, fetchCategories, addCategory, editCategory, removeCategory } = useCategories();
+  const { fetchWallets } = useWallets();
   const [filterType, setFilterType] = useState('EXPENSE'); //  'INCOME' | 'EXPENSE'
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -68,6 +70,8 @@ const Categories = () => {
             }
             // Delete category
             await removeCategory(id);
+            // Refresh wallet balances
+            await fetchWallets();
           } catch (err) {
             console.error('Error deleting transactions or category:', err);
           }

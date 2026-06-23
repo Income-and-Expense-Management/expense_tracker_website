@@ -175,11 +175,16 @@ const Transactions = () => {
       try {
          const res = await categoryService.getCategories(null, false);
          if(res.success) setCategories(res.data);
-      } catch(e) {
+      } catch (err) {
+        console.error(err);
       }
     };
     loadCategories();
   }, []);
+
+  useEffect(() => {
+    fetchWallets();
+  }, [fetchWallets]);
 
   useEffect(() => {
     if (selectedWalletId) {

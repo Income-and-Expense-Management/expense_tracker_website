@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useDashboardData } from './hooks/useDashboardData';
 import { useWallets } from '../../hooks/useWallets';
 import DashboardSummary from './components/DashboardSummary';
@@ -8,7 +9,11 @@ import IncomeExpenseCompareChart from './components/IncomeExpenseCompareChart';
 import BudgetProgress from './components/BudgetProgress';
 
 const Dashboard = () => {
-  const { wallets, selectedWalletId, loading: walletsLoading } = useWallets();
+  const { wallets, selectedWalletId, loading: walletsLoading, fetchWallets } = useWallets();
+
+  useEffect(() => {
+    fetchWallets();
+  }, [fetchWallets]);
 
   const { 
     loading: dataLoading,
