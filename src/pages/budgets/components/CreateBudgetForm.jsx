@@ -13,7 +13,7 @@ const CreateBudgetForm = ({ visible, onClose, onSubmit, loading, editData = null
 
   useEffect(() => {
     if (visible) {
-      fetchCategories('expense');
+      fetchCategories('expense', false);
 
       if (editData) {
         // Prefill form in edit mode
@@ -38,9 +38,9 @@ const CreateBudgetForm = ({ visible, onClose, onSubmit, loading, editData = null
     }
   }, [visible, fetchCategories, form, editData, defaultWalletId]);
 
-  // Lọc an toàn trường hợp API trả về thẳng expense hoặc mảng lẫn lộn
+  // Lọc an toàn trường hợp API trả về thẳng expense hoặc mảng lẫn lộn, chỉ hiển thị danh mục đang hoạt động
   const expenseCategories = categories.filter(c => 
-    c.type === 'expense' || c.type === 'EXPENSE'
+    (c.type === 'expense' || c.type === 'EXPENSE') && c.is_active !== false
   );
 
   const handleSubmit = async () => {

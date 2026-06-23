@@ -25,6 +25,7 @@ const TransactionModal = ({ visible, onClose, onSave, categories, initialWalletI
     if (visible) {
       if (editData) {
         const catType = editData.type || editData.category?.type || 'EXPENSE';
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setType(catType);
         setFormData({
           wallet_id: editData.wallet_id,
