@@ -1,4 +1,4 @@
-﻿import { memo } from 'react';
+import { memo } from 'react';
 
 const CategoryCard = ({ category, onEdit, onDelete, onToggleActive }) => {
   return (
@@ -44,11 +44,7 @@ const CategoryCard = ({ category, onEdit, onDelete, onToggleActive }) => {
               Sửa
             </button>
             <button 
-              onClick={() => {
-                if (window.confirm("Bạn có chắc muốn xóa danh mục này?")) {
-                  onDelete(category.id);
-                }
-              }}
+              onClick={() => onDelete(category.id, category.name)}
               className="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 px-3 py-1.5 rounded-md transition-colors whitespace-nowrap"
             >
               Xóa

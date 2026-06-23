@@ -3,6 +3,8 @@ import { useCategories } from '../../hooks/useCategories';
 import CategoryCard from './components/CategoryCard';
 import CategoryModal from './CategoryModal';
 import { useAppMessage } from '../../hooks/useAppMessage';
+import { Modal } from 'antd';
+import { transactionService } from '../../services/transactionService';
 
 const Categories = () => {
   const { categories, loading, fetchCategories, addCategory, editCategory, removeCategory } = useCategories();
@@ -41,6 +43,39 @@ const Categories = () => {
 
   const handleToggleActive = async (id, currentActiveState) => {
     await editCategory(id, { is_active: !currentActiveState });
+  };
+
+  const handleDeleteCategory = async (id, name) => {
+    try {
+      // Fetch associated transactions to count them
+      const res = await transactionService.getTransactions(null, { category_id: id });
+      const txs = (res && res.success) ? res.data : [];
+      const txCount = txs.length;
+
+      Modal.confirm({
+        title: 'Xác nhận xóa danh mục',
+        content: txCount > 0 
+          ? `Danh mục '${name}' hiện đang liên kết với ${txCount} giao dịch. Nếu tiếp tục xóa, toàn bộ danh mục và các giao dịch liên kết này sẽ bị xóa khỏi hệ thống. Bạn có chắc chắn muốn xóa không?`
+          : `Bạn có chắc chắn muốn xóa danh mục '${name}' này không?`,
+        okText: 'Xóa',
+        okType: 'danger',
+        cancelText: 'Hủy',
+        onOk: async () => {
+          try {
+            // Delete associated transactions first
+            if (txCount > 0) {
+              await Promise.all(txs.map(t => transactionService.deleteTransaction(t.id)));
+            }
+            // Delete category
+            await removeCategory(id);
+          } catch (err) {
+            console.error('Error deleting transactions or category:', err);
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Error checking transaction count:', err);
+    }
   };
 
   return (
@@ -90,7 +125,7 @@ const Categories = () => {
               key={category.id} 
               category={category} 
               onEdit={handleOpenModal}
-              onDelete={removeCategory}
+              onDelete={handleDeleteCategory}
               onToggleActive={handleToggleActive}
             />
           ))}
